@@ -20,8 +20,6 @@
  */
 package coza.opencollab.epub.creator.model;
 
-import coza.opencollab.epub.creator.EpubConstants;
-import coza.opencollab.epub.creator.util.EpubWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -31,6 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import coza.opencollab.epub.creator.EpubConstants;
+import coza.opencollab.epub.creator.util.EpubWriter;
+
 /**
  * Representation of an EPUB book
  *
@@ -38,6 +39,10 @@ import java.util.Set;
  */
 public class EpubBook {
 
+    /**
+     * cover content, meta name "cover" in opf,
+     */
+    private Content cover;
     /**
      * A list of the the content files, this includes the cover, HTML pages, CSS
      * JavaScript or any other resource
@@ -107,10 +112,10 @@ public class EpubBook {
      * Constructs EPUBBook
      *
      * @param language the 2 letter language code set in the dc:language meta
-     * data
-     * @param id the id used as the meta data dc:identifier
-     * @param title the title of the book
-     * @param author the author, this is set as the meta data dc:creator value
+     *                 data
+     * @param id       the id used as the meta data dc:identifier
+     * @param title    the title of the book
+     * @param author   the author, this is set as the meta data dc:creator value
      */
     public EpubBook(String language, String id, String title, String author) {
         this();
@@ -190,7 +195,7 @@ public class EpubBook {
      * Inserts content at a specific index. Only adds unique href's
      *
      * @param content the EpubBook content - TOC, pages, files
-     * @param index index where the content will be inserted
+     * @param index   index where the content will be inserted
      * @return boolean indicating if the content has been added
      */
     public boolean insertContent(Content content, int index) {
@@ -204,8 +209,8 @@ public class EpubBook {
      * Wraps a String in the HTML wrapper and adds create a content object that
      * is added to the content list. Returns null if the href is not unique
      *
-     * @param title the title of the page
-     * @param href used as unique link
+     * @param title   the title of the page
+     * @param href    used as unique link
      * @param content text content to be added
      * @return the Content object generated from the text
      */
@@ -220,11 +225,11 @@ public class EpubBook {
     /**
      * Creates and adds file Content to the book
      *
-     * @param contents the byte array content
+     * @param contents  the byte array content
      * @param mediaType the mime type
-     * @param href used as unique link
-     * @param toc flag whether it must be added to the TOC
-     * @param spine flag whether it must be added to the spine
+     * @param href      used as unique link
+     * @param toc       flag whether it must be added to the TOC
+     * @param spine     flag whether it must be added to the spine
      * @return a reference to the newly created Content object
      */
     public Content addContent(byte[] contents, String mediaType, String href, boolean toc, boolean spine) {
@@ -238,14 +243,14 @@ public class EpubBook {
     /**
      * Creates and adds an InputStream to the book
      *
-     * @param contents the InputStream to the content
+     * @param contents  the InputStream to the content
      * @param mediaType the mime type
-     * @param href used as unique link
-     * @param toc flag whether it must be added to the TOC
-     * @param spine flag whether it must be added to the spine
+     * @param href      used as unique link
+     * @param toc       flag whether it must be added to the TOC
+     * @param spine     flag whether it must be added to the spine
      * @return a reference to the newly created Content object
      * @throws java.io.IOException if the InputStream can not be converted to
-     * byte[]
+     *                             byte[]
      */
     public Content addContent(InputStream contents, String mediaType, String href, boolean toc, boolean spine) throws IOException {
         Content content = new Content(mediaType, href, contents);
@@ -270,11 +275,11 @@ public class EpubBook {
      * Adds an file as the cover image
      *
      * @param coverImage the cover image
-     * @param mediaType the mime type of the cover image
-     * @param href used to name the cover image
+     * @param mediaType  the mime type of the cover image
+     * @param href       used to name the cover image
      */
     public void addCoverImage(byte[] coverImage, String mediaType, String href) {
-        Content cover = new Content(mediaType, href, coverImage);
+        cover = new Content(mediaType, href, coverImage);
         cover.setProperties("cover-image");
         cover.setSpine(false);
         addContent(cover);
@@ -298,6 +303,10 @@ public class EpubBook {
      */
     public void writeToFile(String fileName) throws Exception {
         epubCreator.writeEpubToFile(this, fileName);
+    }
+
+    public Content getCover() {
+        return cover;
     }
 
     /**

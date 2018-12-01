@@ -20,18 +20,20 @@
  */
 package coza.opencollab.epub.creator.impl;
 
-import coza.opencollab.epub.creator.EpubConstants;
-import coza.opencollab.epub.creator.api.OpfCreator;
-import coza.opencollab.epub.creator.model.Content;
-import coza.opencollab.epub.creator.model.EpubBook;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.htmlcleaner.CleanerProperties;
 import org.htmlcleaner.ContentNode;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.PrettyXmlSerializer;
 import org.htmlcleaner.Serializer;
 import org.htmlcleaner.TagNode;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import coza.opencollab.epub.creator.EpubConstants;
+import coza.opencollab.epub.creator.api.OpfCreator;
+import coza.opencollab.epub.creator.model.Content;
+import coza.opencollab.epub.creator.model.EpubBook;
 
 /**
  * Default implementation of the OpfCreator. This follows EPUB3 standards to
@@ -94,6 +96,12 @@ public class OpfCreatorDefault implements OpfCreator {
             TagNode creatorNode = new TagNode("dc:creator");
             creatorNode.addChild(new ContentNode(book.getAuthor()));
             metaNode.addChild(creatorNode);
+        }
+        if (book.getCover() != null) {
+            TagNode coverNode = new TagNode("meta");
+            coverNode.addAttribute("name", "cover");
+            coverNode.addAttribute("content", book.getCover().getHref());
+            metaNode.addChild(coverNode);
         }
     }
 
